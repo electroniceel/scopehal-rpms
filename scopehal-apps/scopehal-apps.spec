@@ -39,6 +39,7 @@ BuildRequires: catch-devel
 BuildRequires: ocl-icd-devel
 BuildRequires: clFFT-devel
 
+%if 0%{?fedora}
 # necessary for building the documentation
 BuildRequires: texlive
 BuildRequires: texlive-makecell
@@ -52,6 +53,7 @@ BuildRequires: texlive-colortbl
 BuildRequires: texlive-koma-script
 BuildRequires: texlive-float
 BuildRequires: texlive-upquote
+%endif
 
 %package   -n glscopeclient
 Summary:   User interface and signal analysis tool for oscilloscopes and logic analyzers
@@ -73,23 +75,39 @@ Libraries required by scopehal-apps
 %setup -n scopehal-apps-%{shortcommit}
 
 %build
-%cmake -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DBUILD_DOCS=ON
+%if 0%{?fedora}
+%define docbuild -DBUILD_DOCS=ON
+%else
+# EL/EPEL doesn't have some texlive packages required to build the documentation
+# so disable building the documentation there
+%define docbuild -DBUILD_DOCS=OFF
+%endif
+
+%cmake -DCMAKE_POSITION_INDEPENDENT_CODE=ON %{docbuild}
 %cmake_build
 
 %install
 %cmake_install
 
+# if to include the documentation depends on a conditional
+# this requires a workaround with a list file, the list file always must contain at least one file
+%define DOC_FILES %{_sourcedir}/doc_files.list
+echo "%doc README.md" >%{DOC_FILES}
+
+%if 0%{?fedora}
 # fix up doc path to Fedora default
-mkdir -p $RPM_BUILD_ROOT%{_docdir}
-mv $RPM_BUILD_ROOT/usr/doc/glscopeclient $RPM_BUILD_ROOT%{_docdir}/glscopeclient
+mkdir -p %{buildroot}%{_docdir}
+mv %{buildroot}/usr/doc/glscopeclient %{buildroot}%{_docdir}/glscopeclient
+
+# include the pdf in the package
+echo "%{_docdir}/glscopeclient/glscopeclient-manual.pdf" >>%{DOC_FILES}
+%endif
 
 # scopehal-apps is just a common source package, no output so no files section
 #%files
 
-%files -n glscopeclient
+%files -n glscopeclient -f %{DOC_FILES}
 %license LICENSE
-%doc README.md
-%{_docdir}/glscopeclient/glscopeclient-manual.pdf
 %{_bindir}/glscopeclient
 %{_datadir}/glscopeclient/*
 %{_datadir}/applications/glscopeclient.desktop  
