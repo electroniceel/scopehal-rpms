@@ -1,0 +1,73 @@
+From fcf4c5a809f49bf6c26b3654c6602de5c9e37760 Mon Sep 17 00:00:00 2001
+From: Robert Underwood <rr.underwood94@gmail.com>
+Date: Mon, 18 Nov 2019 10:17:22 -0600
+Subject: [PATCH] use gnuinstalldirs
+
+---
+ CMakeLists.txt   | 11 +++++------
+ ffts.pc.cmake.in |  7 +++----
+ 2 files changed, 8 insertions(+), 10 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index a02f11a..296c328 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -18,8 +18,7 @@ if(NOT CMAKE_BUILD_TYPE)
+ endif(NOT CMAKE_BUILD_TYPE)
+ 
+ # installation parameters
+-set(INCLUDE_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/include/ffts)
+-set(LIB_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/lib)
++include(GNUInstallDirs)
+ 
+ # common options
+ option(ENABLE_NEON
+@@ -497,7 +496,7 @@ if(ENABLE_SHARED)
+     VERSION ${FFTS_MAJOR}.${FFTS_MINOR}.${FFTS_MICRO}
+   )
+ 
+-  install( TARGETS ffts_shared DESTINATION ${LIB_INSTALL_DIR} )
++install( TARGETS ffts_shared DESTINATION ${CMAKE_INSTALL_LIBDIR} )
+ endif(ENABLE_SHARED)
+ 
+ if(ENABLE_STATIC)
+@@ -511,7 +510,7 @@ if(ENABLE_STATIC)
+     set_target_properties(ffts_static PROPERTIES OUTPUT_NAME ffts)
+   endif(UNIX)
+ 
+-  install( TARGETS ffts_static DESTINATION ${LIB_INSTALL_DIR} )
++  install( TARGETS ffts_static DESTINATION ${CMAKE_INSTALL_LIBDIR} )
+ endif(ENABLE_STATIC)
+ 
+ if(ENABLE_STATIC OR ENABLE_SHARED)
+@@ -543,10 +542,10 @@ if(UNIX)
+       # Produce a pkg-config file for linking against the shared lib
+       configure_file("ffts.pc.cmake.in" "ffts.pc" @ONLY)
+       install(FILES       "${CMAKE_CURRENT_BINARY_DIR}/ffts.pc"
+-              DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig")
++        DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/pkgconfig/")
+   endif(PKG_CONFIG_FOUND)
+ endif(UNIX)
+ 
+ install( FILES
+     ${FFTS_HEADERS}
+-  DESTINATION ${INCLUDE_INSTALL_DIR} )
++    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
+diff --git a/ffts.pc.cmake.in b/ffts.pc.cmake.in
+index 43f38e9..953785f 100644
+--- a/ffts.pc.cmake.in
++++ b/ffts.pc.cmake.in
+@@ -1,10 +1,9 @@
+ prefix=@CMAKE_INSTALL_PREFIX@
+-exec_prefix=${exec_prefix}
+-libdir=${libdir}
+-includedir=${includedir}
++libdir=${prefix}/@CMAKE_INSTALL_LIBDIR@
++includedir=${prefix}/@CMAKE_INSTALL_INCLUDEDIR@
+ 
+ Name: @CMAKE_PROJECT_NAME@
+ Description: fast Fourier transform library
+ Version: @FFTS_VERSION@
+ Libs: -L${libdir} -lffts -lm
+-Cflags: -I${includedir}/ffts
++Cflags: -I${includedir}
