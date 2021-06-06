@@ -26,6 +26,8 @@ URL: https://github.com/azonenberg/scopehal-apps
 Source: scopehal-apps-%{shortcommit}.tar.gz
 
 BuildRequires: cmake
+BuildRequires: gcc
+BuildRequires: gcc-c++
 BuildRequires: ffts-devel
 BuildRequires: gtkmm30-devel
 BuildRequires: glew-devel

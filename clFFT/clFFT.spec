@@ -13,6 +13,8 @@ Source: https://github.com/clMathLibraries/clFFT/archive/v%{version}.tar.gz#/%{n
 Source1: clFFT-client.1
 
 BuildRequires: cmake
+BuildRequires: gcc
+BuildRequires: gcc-c++
 BuildRequires: boost-devel
 BuildRequires: opencl-headers
 BuildRequires: ocl-icd-devel

@@ -15,6 +15,7 @@ Source: https://github.com/anthonix/ffts/archive/%{commit}/ffts-%{shortcommit}.t
 Patch1: https://github.com/anthonix/ffts/commit/fcf4c5a809f49bf6c26b3654c6602de5c9e37760.patch
 
 BuildRequires: cmake
+BuildRequires: gcc
 
 %package   devel
 Summary:   The Fastest Fourier Transform in the South
