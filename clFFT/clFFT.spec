@@ -49,6 +49,8 @@ developing applications that use %{name}.
 
 %build
 cd src
+
+# -fpermissive required due to https://github.com/clMathLibraries/clFFT/issues/237
 %cmake \
     -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
     -DBoost_USE_STATIC_LIBS=OFF \
@@ -58,7 +60,8 @@ cd src
     -DBUILD_LOADLIBRARIES=ON \
     -DBUILD_SHARED_LIBS=ON \
     -DBUILD_EXAMPLES=OFF \
-    -DBUILD_CALLBACK_CLIENT=ON
+    -DBUILD_CALLBACK_CLIENT=ON \
+    -DCMAKE_CXX_FLAGS_RELEASE:STRING="-DNDEBUG -fpermissive"
 %cmake_build
 
 %install
