@@ -1,6 +1,6 @@
 # adapt commit id and commitdate to match the git version you want to build
-%global commit ceb14ffbcde5158e55acb34c4561b982a6a23fbb
-%global commitdate 20210602
+%global commit b327de07e8b39b034522933c3cef4c157c9df966
+%global commitdate 20210617
 
 # then download and build like this
 # (you need an rpmbuild dir, can be created with rpmdev-setuptree)
